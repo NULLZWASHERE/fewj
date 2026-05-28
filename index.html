@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Controller</title>
+</head>
+
+<body style="font-family:Arial;text-align:center;padding:20px;">
+
+<h2>📡 Text API Controller</h2>
+
+<!-- INPUT -->
+<input id="input" placeholder="Type text..." 
+style="width:80%;padding:10px;font-size:16px;">
+
+<br><br>
+
+<button onclick="sendText()" style="padding:10px 20px;font-size:16px;">
+Send Text
+</button>
+
+<hr>
+
+<h3>📱 Live Display</h3>
+<div id="display" style="font-size:30px;margin-top:20px;">
+Loading...
+</div>
+
+<script>
+const API = "https://textapi.infodmca.org/api/text";
+
+// SEND TEXT TO API
+async function sendText() {
+  const text = document.getElementById("input").value;
+
+  await fetch(API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text })
+  });
+
+  document.getElementById("input").value = "";
+}
+
+// LIVE UPDATE DISPLAY
+async function updateText() {
+  try {
+    const res = await fetch(API);
+    const data = await res.json();
+    document.getElementById("display").innerText = data.text || "No text yet";
+  } catch (e) {
+    document.getElementById("display").innerText = "Error loading";
+  }
+}
+
+// refresh every 1 second
+setInterval(updateText, 1000);
+updateText();
+</script>
+
+</body>
+</html>
